@@ -1,0 +1,1444 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ms Lê Hằng English - Interactive Test</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-grad: linear-gradient(-45deg, #FF6B6B, #8854C0, #00C9A7, #FDCB6E);
+            --correct-color: #00D26A;
+            --wrong-color: #FF4757;
+            --card-bg: rgba(255, 255, 255, 0.96);
+            --text-color: #2d3748;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Quicksand', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            height: 100vh;
+            overflow: hidden;
+            background: var(--primary-grad);
+            background-size: 400% 400%;
+            animation: gradientBG 20s ease infinite;
+            position: relative;
+            color: var(--text-color);
+        }
+
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 100 100'><text x='10' y='30' font-size='22' opacity='0.25'>📚</text><text x='60' y='40' font-size='22' opacity='0.25'>🏫</text><text x='30' y='80' font-size='22' opacity='0.25'>🎒</text><text x='80' y='80' font-size='22' opacity='0.25'>🌟</text></svg>");
+            background-repeat: repeat;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .wrapper {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            padding: 8px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .teacher-title {
+            font-size: 1.1rem;
+            font-weight: 900;
+            color: #4a5568;
+        }
+        .teacher-title span {
+            color: #8854C0;
+        }
+
+        .timer-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .timer-btn {
+            background: #FF6B6B;
+            color: white;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 0 #cf3c3c;
+            font-size: 0.9rem;
+            transition: all 0.1s ease;
+        }
+        .timer-btn:active {
+            transform: translateY(3px);
+            box-shadow: 0 1px 0 #cf3c3c;
+        }
+
+        .timer-display {
+            font-size: 1.2rem;
+            font-weight: 900;
+            background: #2d3748;
+            color: #FDCB6E;
+            padding: 4px 12px;
+            border-radius: 10px;
+            min-width: 75px;
+            text-align: center;
+        }
+
+        .main-content {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+            padding: 12px;
+            gap: 12px;
+        }
+
+        .pane {
+            flex: 1;
+            background: var(--card-bg);
+            border-radius: 18px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            overflow-y: auto;
+            padding: 20px;
+            position: relative;
+            scroll-behavior: smooth;
+        }
+
+        .pane::-webkit-scrollbar {
+            width: 8px;
+        }
+        .pane::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .pane::-webkit-scrollbar-thumb {
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        .section-header {
+            background: #8854C0;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 900;
+            margin-top: 15px;
+            margin-bottom: 12px;
+            box-shadow: 0 4px 0 #5f3391;
+        }
+
+        .passage-card {
+            background: #f7fafc;
+            border-left: 5px solid #00C9A7;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 0 12px 12px 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+        }
+
+        .passage-title {
+            font-weight: 900;
+            font-size: 1.1rem;
+            color: #2d3748;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .passage-text {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #4a5568;
+            white-space: pre-line;
+        }
+
+        .translate-btn {
+            background: #00C9A7;
+            color: white;
+            border: none;
+            padding: 5px 12px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 10px;
+            box-shadow: 0 3px 0 #00967c;
+            transition: all 0.1s;
+        }
+        .translate-btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 1px 0 #00967c;
+        }
+
+        .translation-box {
+            display: none;
+            margin-top: 10px;
+            padding: 10px;
+            background: #fff;
+            border-radius: 8px;
+            font-style: italic;
+            border: 1px dashed #00C9A7;
+            color: #2d3748;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .glossary-box {
+            margin-top: 25px;
+            background: #fff;
+            border: 2px solid #edf2f7;
+            border-radius: 12px;
+            padding: 15px;
+        }
+        .glossary-title {
+            font-size: 1.1rem;
+            font-weight: 900;
+            color: #8854C0;
+            margin-bottom: 10px;
+        }
+        .glossary-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+        .glossary-table th, .glossary-table td {
+            padding: 8px 10px;
+            text-align: left;
+            border-bottom: 1px solid #edf2f7;
+        }
+        .glossary-table th {
+            background: #8854C0;
+            color: white;
+            font-weight: 700;
+        }
+
+        .question-card {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+            transition: all 0.2s;
+        }
+        .question-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .question-header {
+            font-weight: 900;
+            color: #8854C0;
+            font-size: 0.95rem;
+            margin-bottom: 6px;
+        }
+
+        .question-text {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            line-height: 1.5;
+        }
+
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .option-btn {
+            background: white;
+            border: 2px solid #e2e8f0;
+            padding: 10px 15px;
+            border-radius: 12px;
+            text-align: left;
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 3px 0 #e2e8f0;
+            transition: all 0.1s;
+        }
+        .option-btn:hover:not(.disabled) {
+            transform: scale(1.015);
+            background-color: #f7fafc;
+        }
+        .option-btn:active:not(.disabled) {
+            transform: translateY(2px);
+        }
+
+        .option-btn.correct {
+            background-color: #e3faf2 !important;
+            border-color: var(--correct-color) !important;
+            box-shadow: 0 3px 0 var(--correct-color) !important;
+            color: #0c6134 !important;
+        }
+        .option-btn.wrong {
+            background-color: #ffe3e3 !important;
+            border-color: var(--wrong-color) !important;
+            box-shadow: 0 3px 0 var(--wrong-color) !important;
+            color: #721c24 !important;
+            animation: shake 0.4s ease;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .explanation-box {
+            display: none;
+            margin-top: 10px;
+            padding: 12px;
+            background: #f7fafc;
+            border-left: 4px solid #8854C0;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .submit-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .submit-btn {
+            background: #FF6B6B;
+            color: white;
+            border: none;
+            padding: 12px 35px;
+            font-size: 1.2rem;
+            font-weight: 900;
+            border-radius: 15px;
+            cursor: pointer;
+            box-shadow: 0 5px 0 #cf3c3c;
+            transition: all 0.1s;
+        }
+        .submit-btn:active {
+            transform: translateY(3px);
+            box-shadow: 0 2px 0 #cf3c3c;
+        }
+
+        #confetti-canvas {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top:0; left:0; width:100%; height:100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(4px);
+        }
+        .modal-overlay.active {
+            display: flex;
+        }
+        .score-card {
+            background: white;
+            padding: 30px;
+            border-radius: 25px;
+            text-align: center;
+            max-width: 450px;
+            width: 90%;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+        .score-num {
+            font-size: 3.5rem;
+            font-weight: 900;
+            color: #00C9A7;
+            margin: 15px 0;
+        }
+        .score-comment {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #4a5568;
+            margin-bottom: 20px;
+        }
+        .close-btn {
+            background: #8854C0;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="confetti-canvas"></canvas>
+    <div class="wrapper">
+        <header>
+            <div class="teacher-title">Giáo viên tạo: <span>Ms Lê Hằng English</span> 🌟</div>
+            <div class="timer-container">
+                <button class="timer-btn" id="timer-toggle-btn" onclick="toggleTimer()">BẮT ĐẦU TÍNH GIỜ LÀM BÀI</button>
+                <div class="timer-display" id="timer-clock">10:00</div>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <!-- LEFT PANE: Reading Passages -->
+            <div class="pane" id="left-pane">
+                <div class="section-header">EXERCISE 17: ADVERTISEMENTS & ANNOUNCEMENTS</div>
+                
+                <div class="passage-card">
+                    <div class="passage-title">❶ 🍽 Delicious School Lunch Awaits You! 🍽</div>
+                    <div class="passage-text">Come and (1)______ tasty, healthy meals in our school canteen every day! 🍲 We (2)_____ fresh vegetables, warm soups, yummy sandwiches, and sweet fruits. Our friendly staff are ready (3)_____ you. Eating a good lunch gives you (4)_____ to study and play. Don’t miss today’s special menu! Visit the canteen and have a wonderful meal with your friends!</div>
+                    <button class="translate-btn" onclick="toggleTranslation(this)">Mở dịch đoạn này 🌟</button>
+                    <div class="translation-box">
+                        Hãy đến và thưởng thức những bữa ăn ngon lành, lành mạnh tại căn tin trường chúng ta mỗi ngày! Chúng tôi phục vụ rau tươi, súp ấm, bánh mì kẹp ngon tuyệt và trái cây ngọt mát. Đội ngũ nhân viên thân thiện của chúng tôi đã sẵn sàng giúp đỡ bạn. Ăn một bữa trưa ngon miệng sẽ tiếp thêm năng lượng cho bạn học tập và vui chơi. Đừng bỏ lỡ thực đơn đặc biệt của ngày hôm nay! Hãy ghé thăm căn tin và thưởng thức một bữa ăn tuyệt vời cùng bạn bè nhé!
+                    </div>
+                </div>
+
+                <div class="passage-card">
+                    <div class="passage-title">❷ 📚 Let’s Talk About Your Favourite Subject! 📚</div>
+                    <div class="passage-text">Do you love Math, Science, or English? 🌟 Every (1)_____ helps you learn new things and grow. When you study your favourite subject, you feel happy and (2)_____. 😊 Share your favourite subject (3)_____ your friends and teachers. Let’s have fun learning together and make every lesson special. Remember: learning (4)_____ the key to your bright future! 🔑✨</div>
+                    <button class="translate-btn" onclick="toggleTranslation(this)">Mở dịch đoạn này 🌟</button>
+                    <div class="translation-box">
+                        Bạn có yêu thích môn Toán, Khoa học hay Tiếng Anh không? Mỗi môn học đều giúp bạn học hỏi những điều mới và trưởng thành. Khi bạn học môn học yêu thích của mình, bạn sẽ cảm thấy hạnh phúc và hào hứng. Hãy chia sẻ môn học yêu thích của bạn với bạn bè và thầy cô giáo. Hãy cùng nhau học tập thật vui và biến mỗi bài học trở nên đặc biệt nhé. Hãy nhớ rằng: học tập chính là chìa khóa dẫn tới tương lai tươi sáng của bạn!
+                    </div>
+                </div>
+
+                <div class="passage-card">
+                    <div class="passage-title">❸ 🎒 Welcome to My New School! 🎒</div>
+                    <div class="passage-text">I am so happy (1)_____ at my new school! 🏫 The classrooms are bright and clean. The teachers are kind and helpful. I have made (2)_____ new friends. 😊 There are fun (3)_____ like sports, music, and art. Every day is exciting and full (4)_____ learning. 📚 I love my new school because it feels like home. Let’s enjoy this wonderful journey together! 🌟</div>
+                    <button class="translate-btn" onclick="toggleTranslation(this)">Mở dịch đoạn này 🌟</button>
+                    <div class="translation-box">
+                        Mình rất hạnh phúc khi được học tại ngôi trường mới của mình! Các phòng học đều sáng sủa và sạch sẽ. Thầy cô giáo thì tốt bụng và hay giúp đỡ. Mình đã kết giao được nhiều người bạn mới. Có những hoạt động vui vẻ như thể thao, âm nhạc và mỹ thuật. Mỗi ngày đều rất hào hứng và tràn ngập những bài học. Mình yêu ngôi trường mới vì nó mang lại cảm giác thân thuộc như ở nhà. Hãy cùng nhau tận hưởng cuộc hành trình tuyệt vời này nhé!
+                    </div>
+                </div>
+
+                <div class="section-header">EXERCISE 18: CLOZE TEXTS</div>
+
+                <div class="passage-card">
+                    <div class="passage-title">❶ Nam's Hobbies</div>
+                    <div class="passage-text">Hi there, I’m Nam, I have a sister, Vy. We have different hobbies. I spend time (1)_____ my family most evenings. At (2)_____ weekends, I hang out with my friends at the park (3)_____ in the playground in the local woods. If it rains, I like to go to (4)_____ a film with my friends. My sister belongs to a chess clubs. The club meets twice a month, and once a year they go (5)_____. They stay in tends on a (6)_____ and have picnics and barbecues. My sister is a friendly person. We get on well with each other.</div>
+                    <button class="translate-btn" onclick="toggleTranslation(this)">Mở dịch đoạn này 🌟</button>
+                    <div class="translation-box">
+                        Xin chào, mình là Nam, mình có một người chị/em gái tên là Vy. Chúng mình có những sở thích khác nhau. Mình dành thời gian cùng gia đình vào hầu hết các buổi tối. Vào cuối tuần, mình đi chơi với bạn bè ở công viên hoặc ở sân chơi trong khu rừng địa phương. Nếu trời mưa, mình thích đi xem một bộ phim với các bạn. Chị mình tham gia một câu lạc bộ cờ vua. Câu lạc bộ gặp nhau hai lần một tháng, và một năm một lần họ đi cắm trại. Họ ở trong lều tại một địa điểm cắm trại xinh đẹp, tổ chức dã ngoại và tiệc nướng. Chị mình là một người thân thiện. Chúng mình rất hòa thuận với nhau.
+                    </div>
+                </div>
+
+                <div class="passage-card">
+                    <div class="passage-title">❷ Life at Shakespeare School</div>
+                    <div class="passage-text">I am a grade 6 student at Shakespeare School in Birmingham. I often walk to school (1)_____ I live nearby. I don’t wear a (2)_____ only when I have physical education (P. E). Then I have to (3)_____ a white T- shirt with the school’s name, blue shorts and white socks. Besides English, I learn Spanish and German as foreign languages.  My school is well- equipped. There (4)_____ a laboratory to do experiments, a library to read books, a music room to (5)_____ musical instruments, and a computer room to learn how to use a computer. There is also a large (6)_____ where we can have lunch and a small snack bar to buy some drinks.</div>
+                    <button class="translate-btn" onclick="toggleTranslation(this)">Mở dịch đoạn này 🌟</button>
+                    <div class="translation-box">
+                        Em là học sinh lớp 6 trường Shakespeare ở Birmingham. Em thường đi bộ đến trường vì em sống ở gần đó. Em không mặc đồng phục trừ những lúc có giờ giáo dục thể chất (P.E). Khi đó em phải mặc một chiếc áo thun trắng có tên trường, quần đùi xanh và tất trắng. Bên cạnh tiếng Anh, em học tiếng Tây Ban Nha và tiếng Đức như một ngoại ngữ. Trường học của em được trang bị rất tốt. Có một phòng thí nghiệm để làm thí nghiệm, một thư viện để đọc sách, một phòng âm nhạc để chơi các nhạc cụ, và một phòng máy tính để học cách sử dụng máy tính. Ngoài ra còn có một nhà ăn (căng tin) lớn nơi chúng em có thể ăn trưa và một quầy ăn nhẹ nhỏ để mua đồ uống.
+                    </div>
+                </div>
+
+                <div class="passage-card">
+                    <div class="passage-title">❸ Suzy's New School Rules</div>
+                    <div class="passage-text">My name is Suzy. I come from China, but now I (1)_____ in London with my sister and study in a secondary school there. It is far from my house, so it is very difficult to get there. At my new school, there are some (2)_____ I must follow: arrive at school (3)_____ time; wear uniform; finish the homework (4)____ going to school; do not eat or drink in class and do not copy your friend’s test, either. I like my new school; the teachers are kind and (5)______. The school building is large and modern. And I (6)_____ some new friends in my classroom. And after school, I get the same orders at home. My mother keeps telling me: “get up, don’t be late, and make your bed”. Some things never change!</div>
+                    <button class="translate-btn" onclick="toggleTranslation(this)">Mở dịch đoạn này 🌟</button>
+                    <div class="translation-box">
+                        Tên mình là Suzy. Mình đến từ Trung Quốc, nhưng hiện tại mình đang sống ở Luân Đôn cùng với chị gái và học tại một trường trung học ở đó. Trường xa nhà nên đi lại rất khó khăn. Tại trường mới, có một vài quy định mình phải tuân theo: đến trường đúng giờ; mặc đồng phục; hoàn thành bài tập về nhà trước khi đến trường; không ăn uống trong lớp và cũng không chép bài kiểm tra của bạn. Mình thích trường mới; thầy cô giáo rất tốt bụng và hay giúp đỡ. Tòa nhà trường học thì lớn và hiện đại. Và mình đã kết thêm vài người bạn mới trong lớp học. Sau giờ học, mình cũng nhận được những mệnh lệnh tương tự ở nhà. Mẹ cứ nhắc mình suốt: "dậy đi, đừng muộn đấy, và gấp chăn màn lại". Có những thứ không bao giờ thay đổi!
+                    </div>
+                </div>
+
+                <div class="section-header">EXERCISE 19: READING COMPREHENSION</div>
+
+                <div class="passage-card">
+                    <div class="passage-title">❶ Email from John to Sam</div>
+                    <div class="passage-text">Hi Sam,
+Just a quick email to say that sounds like a great idea. Saturday is better for me because I don’t have classes on Sunday. So if that’s still good for you, why don’t you come here? Then you can see our new flat. We can eat at home and then go for a walk in the afternoon. It’s going to be so good to catch up finally. I want to hear all about your new school!
+Our dress is 50 Hilton Road, but it’s a bit difficult to find because the house numbers are really strange here. If you turn left at the post office and keep going past the big white house on Charles Road, there’s a small side street behind it with the houses 50-56 in.
+Let me know if there’s anything you do/ don’t like to eat.
+See you soon!
+John</div>
+                    <button class="translate-btn" onclick="toggleTranslation(this)">Mở dịch đoạn này 🌟</button>
+                    <div class="translation-box">
+                        Chào Sam,
+Chỉ là một email nhanh để nói rằng ý tưởng đó nghe có vẻ tuyệt vời. Thứ Bảy sẽ tốt hơn cho mình vì mình không có tiết học vào Chủ Nhật. Vì vậy nếu điều đó vẫn ổn với cậu, tại sao cậu không đến đây? Khi đó cậu có thể xem căn hộ mới của chúng mình. Chúng ta có thể ăn uống tại nhà và sau đó đi dạo vào buổi chiều. Thật tốt khi cuối cùng cũng có thể gặp nhau để hàn huyên tâm sự. Mình muốn nghe tất cả về ngôi trường mới của cậu!
+Địa chỉ của tụi mình là số 50 đường Hilton, nhưng hơi khó tìm một chút vì số nhà ở đây thực sự rất kỳ lạ. Nếu cậu rẽ trái ở bưu điện và tiếp tục đi qua ngôi nhà lớn màu trắng trên đường Charles, có một con phố nhỏ phía sau đó có các nhà từ số 50-56.
+Hãy cho mình biết nếu có thứ gì cậu thích hoặc không thích ăn nhé.
+Hẹn gặp lại cậu sớm!
+John
+                    </div>
+                </div>
+
+                <div class="passage-card">
+                    <div class="passage-title">❷ Eton College</div>
+                    <div class="passage-text">Eton College is very famous private school near London. It is over 570 years old. There are about 1, 300 students and they all live in the school during the term. There aren’t any girls in this school- only boys. Most students stay here until they are 18 years old.
+This school is very expensive and it costs about 30,000 a year to study there. Most Eton students come from very wealthy families, for example, Prince William and Prince Harry!
+There are about 100 classrooms, lots of science labs, ICT rooms, music rooms, a concert hall, two theatres, a gym, two swimming pools, twenty tennis courts and an athletics track and a golf court. The school has 160 teachers. There is one teacher for 8 students (1:8 ratio).</div>
+                    <button class="translate-btn" onclick="toggleTranslation(this)">Mở dịch đoạn này 🌟</button>
+                    <div class="translation-box">
+                        Trường Cao đẳng Eton là một ngôi trường tư thục vô cùng nổi tiếng gần Luân Đôn. Ngôi trường đã hơn 570 tuổi. Có khoảng 1.300 học sinh và tất cả họ đều sống tại trường trong suốt học kỳ. Không có bất kỳ học sinh nữ nào ở trường này - chỉ toàn là học sinh nam. Hầu hết học sinh ở lại đây cho đến khi họ 18 tuổi.
+Ngôi trường này rất đắt đỏ và chi phí tốn khoảng 30.000 bảng một năm để học tập ở đó. Hầu hết học sinh Eton đều đến từ những gia đình rất giàu có, ví dụ như Hoàng tử William và Hoàng tử Harry!
+Có khoảng 100 phòng học, rất nhiều phòng thí nghiệm khoa học, phòng máy tính ICT, phòng âm nhạc, một phòng hòa nhạc, hai nhà hát, một phòng thể dục, hai hồ bơi, hai mươi sân quần vợt, một đường chạy điền kinh và một sân gôn. Trường có 160 giáo viên.
+                    </div>
+                </div>
+
+                <div class="passage-card">
+                    <div class="passage-title">❸ Linda the Musician</div>
+                    <div class="passage-text">Linda is a musician. She's tall and beautiful. She works in a studio and a con-cert hall. She plays the piano. Every day she gets up at nine o'clock in the morning. She takes a shower and gets dressed. She drinks a cup of coffee and eats some toast. At ten o'clock, she takes a taxi to the studio.  In the studio, she plays the piano. She writes new songs and makes CDs. At one o'clock, she goes to the restaurant. She eats lunch with her friends. At three o'clock, she goes to the studio again. She plays more music and sings. At six o'clock, she goes home and has dinner. She goes to the concert hall at eight o'clock. She plays her music for lots of people. They like her songs. She goes home at eleven o'clock. She is very tired and she goes to bed.</div>
+                    <button class="translate-btn" onclick="toggleTranslation(this)">Mở dịch đoạn này 🌟</button>
+                    <div class="translation-box">
+                        Linda là một nhạc sĩ. Cô ấy cao và xinh đẹp. Cô ấy làm việc trong một phòng thu và một phòng hòa nhạc. Cô ấy chơi đàn piano. Mỗi ngày cô ấy thức dậy lúc 9 giờ sáng. Cô ấy đi tắm và mặc quần áo. Cô ấy uống một tách cà phê và ăn một ít bánh mì nướng. Lúc mười giờ, cô ấy đi taxi đến phòng thu. Trong phòng thu, cô ấy chơi đàn piano. Cô ấy viết những bài hát mới và làm đĩa CD. Lúc một giờ, cô ấy đến nhà hàng. Cô ấy ăn trưa cùng bạn bè. Lúc ba giờ, cô ấy lại đến phòng thu. Cô ấy chơi nhiều nhạc hơn và hát. Lúc sáu giờ, cô ấy về nhà và ăn tối. Cô ấy đến phòng hòa nhạc lúc tám giờ tối. Cô ấy chơi nhạc cho rất nhiều người nghe. Họ thích những bài hát của cô ấy. Cô ấy về nhà lúc mười một giờ đêm. Cô ấy rất mệt và đi ngủ.
+                    </div>
+                </div>
+
+                <div class="glossary-box">
+                    <div class="glossary-title">📚 BẢNG TỪ VỰNG ACADEMIC (GLOSSARY)</div>
+                    <table class="glossary-table">
+                        <thead>
+                            <tr>
+                                <th>Từ vựng</th>
+                                <th>Loại từ</th>
+                                <th>Nghĩa tiếng Việt</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Delicious</td><td>adj</td><td>Ngon lành, tuyệt vời</td></tr>
+                            <tr><td>Subject</td><td>n</td><td>Môn học, chủ đề</td></tr>
+                            <tr><td>Excited</td><td>adj</td><td>Hào hứng, phấn khích</td></tr>
+                            <tr><td>Activities</td><td>n</td><td>Các hoạt động</td></tr>
+                            <tr><td>Well-equipped</td><td>adj</td><td>Được trang bị đầy đủ</td></tr>
+                            <tr><td>Experiment</td><td>n</td><td>Thí nghiệm khoa học</td></tr>
+                            <tr><td>Secondary school</td><td>n</td><td>Trường trung học cơ sở</td></tr>
+                            <tr><td>Catch up</td><td>v Phrasal</td><td>Gặp gỡ, hàn huyên tâm sự</td></tr>
+                            <tr><td>Wealthy</td><td>adj</td><td>Giàu có, thịnh vượng</td></tr>
+                            <tr><td>Exhausted</td><td>adj</td><td>Kiệt sức, vô cùng mệt mỏi</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- RIGHT PANE: Quiz Exercises -->
+            <div class="pane" id="right-pane">
+                <!-- EX 17 Q1 -->
+                <div class="question-card" data-qtype="abcd" data-correct="A">
+                    <div class="question-header">Exercise 17 - Câu 1 🍽</div>
+                    <div class="question-text">Come and (1)______ tasty, healthy meals in our school canteen every day!</div>
+                    <div class="options-list">
+                        <button class="option-btn" data-opt="A">A. enjoy</button>
+                        <button class="option-btn" data-opt="B">B. build</button>
+                        <button class="option-btn" data-opt="C">C. play</button>
+                        <button class="option-btn" data-opt="D">D. make</button>
+                    </div>
+                    <div class="explanation-box">
+                        <strong>Lời giải của cô Lê Hằng:</strong> Động từ "enjoy" mang ý nghĩa là thưởng thức (món ăn ngon). Các từ khác không phù hợp ngữ cảnh đồ ăn: build (xây dựng), play (chơi), make (chế tạo).
+                    </div>
+                </div>
+
+                <!-- EX 17 Q2 -->
+                <div class="question-card" data-qtype="abcd" data-correct="D">
+                    <div class="question-header">Exercise 17 - Câu 2 🍽</div>
+                    <div class="question-text">We (2)_____ fresh vegetables, warm soups, yummy sandwiches...</div>
+                    <div class="options-list">
+                        <button class="option-btn" data-opt="A">A. served</button>
+                        <button class="option-btn" data-opt="B">B. will serves</button>
+                        <button class="option-btn" data-opt="C">C. serves</button>
+                        <button class="option-btn" data-opt="D">D. are serving</button>
+                    </div>
+                    <div class="explanation-box">
+                        <strong>Lời giải của cô Lê Hằng:</strong> Sử dụng thì hiện tại tiếp diễn "are serving" để diễn tả hành động đang cung cấp/phục vụ món ăn hàng ngày tại căn tin. "will serves" sai ngữ pháp vì sau will phải giữ nguyên dạng, "serves" sai chia ngôi số nhiều cho chủ ngữ "We".
+                    </div>
+                </div>
+
+                <!-- EX 17 Q3 -->
+                <div class="question-card" data-qtype="abcd" data-correct="B">
+                    <div class="question-header">Exercise 17 - Câu 3 🍽</div>
+                    <div class="question-text">Our friendly staff are ready (3)_____ you.</div>
+                    <div class="options-list">
+                        <button class="option-btn" data-opt="A">A. to helping</button>
+                        <button class="option-btn" data-opt="B">B. to help</button>
+                        <button class="option-btn" data-opt="C">C. helping</button>
+                        <button class="option-btn" data-opt="D">D. help</button>
+                    </div>
+                    <div class="explanation-box">
+                        <strong>Lời giải của cô Lê Hằng:</strong> Cấu trúc tính từ: "be ready + to V-infinitive" nghĩa là sẵn sàng làm việc gì. Do đó đáp án chính xác nhất là "to help".
+                    </div>
+                </div>
+
+                <!-- EX 17 Q4 -->
+                <div class="question-card" data-qtype="abcd" data-correct="D">
+                    <div class="question-header">Exercise 17 - Câu 4 🍽</div>
+                    <div class="question-text">Eating a good lunch gives you (4)_____ to study and play.</div>
+                    <div class="options-list">
+                        <button class="option-btn" data-opt="A">A. judo</button>
+                        <button class="option-btn" data-opt="B">B. projector</button>
+                        <button class="option-btn" data-opt="C">C. map</button>
+                        <button class="option-btn" data-opt="D">D. energy</button>
+                    </div>
+                    <div class="explanation-box">
+                        <strong>Lời giải của cô Lê Hằng:</strong> Danh từ "energy" mang ý nghĩa là năng lượng, sức lực. Ăn trưa ngon bổ dưỡng đem lại năng lượng để học và chơi, các từ khác như judo (võ), projector (máy chiếu), map (bản đồ) đều vô lý.
+                    </div>
+                </div>
+
+                <!-- EX 17 - SECTION 2 - Q1 -->
+                <div class="question-card" data-qtype="abcd" data-correct="B">
+                    <div class="question-header">Exercise 17 - Câu 1 📚</div>
+                    <div class="question-text">Every (1)_____ helps you learn new things and grow.</div>
+                    <div class="options-list">
+                        <button class="option-btn" data-opt="A">A. computer</button>
+                        <button class="option-btn" data-opt="B">B. subject</button>
+                        <button class="option-btn" data-opt="C">C. exercise</button>
+                        <button class="option-btn" data-opt="D">D. globe</button>
+                    </div>
+                    <div class="explanation-box">
+                        <strong>Lời giải của cô Lê Hằng:</strong> Dựa theo tiêu đề và câu hỏi liền trước liệt kê "Math, Science, or English" thì từ thích hợp điền vào chỗ trống nhất chính là "subject" (môn học).
+                    </div>
+                </div>
+
+                <!-- EX 17 - SECTION 2 - Q2 -->
+                <div class="question-card" data-qtype="abcd" data-correct="D">
+                    <div class="question-header">Exercise 17 - Câu 2 📚</div>
+                    <div class="question-text">When you study your favourite subject, you feel happy and (2)_____.</div>
+                    <div class="options-list">
+                        <button class="option-btn" data-opt="A">A. disappointed</button>
+                        <button class="option-btn" data-opt="B">B. tired</button>
+                        <button class="option-btn" data-opt="C">C. bad</button>
+                        <button class="option-btn" data-opt="D">D. excited</button>
+                    </div>
+                    <div class="explanation-box">
+                        <strong>Lời giải của cô Lê Hằng:</strong> Từ kết nối bằng liên từ "and" với "happy" (tính từ tích cực) cần một tính từ tích cực đồng dạng. Chỉ có "excited" (hào hứng, vui vẻ) là thích hợp nhất. Loai các từ tiêu cực: disappointed (thất vọng), tired (mệt mỏi), bad (tồi tệ).
+                    </div>
+                </div>
+
+                <!-- EX 17 - SECTION 2 - Q3 -->
+                <div class="question-card" data-qtype="abcd" data-correct="C">
+                    <div class="question-header">Exercise 17 - Câu 3 📚</div>
+                    <div class="question-text">Share your favourite subject (3)_____ your friends and teachers.</div>
+                    <div class="options-list">
+                        <button class="option-btn" data-opt="A">A. to</button>
+                        <button class="option-btn" data-opt="B">B. at</button>
+                        <button class="option-btn" data-opt="C">C. with</button>
+                        <button class="option-btn" data-opt="D">D. on</button>
+                    </div>
+                    <div class="explanation-box">
+                        <strong>Lời giải của cô Lê Hằng:</strong> Cấu trúc động từ đi kèm giới từ cố định: "Share something with somebody" nghĩa là chia sẻ điều gì đó cùng với ai.
+                    </div>
+                </div>
+
+                <!-- EX 17 - SECTION 2 - Q4 -->
+                <div class="question-card" data-qtype="abcd" data-correct="D">
+                    <div class="question-header">Exercise 17 - Câu 4 📚</div>
+                    <div class="question-text">Remember: learning (4)_____ the key to your bright future!</div>
+                    <div class="options-list">
+                        <button class="option-btn" data-opt="A">A. be</button>
+                        <button class="option-btn" data-opt="B">B. am</button>
+                        <button class="option-btn" data-opt="C">C. will be</button>
+                        <button class="option-btn" data-opt="D">D. is</button>
+                    </div>
+                    <div class="explanation-box">
+                        <strong>Lời giải của cô Lê Hằng:</strong> Danh động từ "learning" đóng vai trò làm chủ ngữ số ít, do đó động từ tobe ở hiện tại đơn phù hợp nhất là "is".
+                    </div>
+                </div>
+
+                <!-- EX 17 - SECTION 3 - Q1 -->
+                <div class="question-card" data-qtype="abcd" data-correct="B">
+                    <div class="question-header">Exercise 17 - Câu 1 🎒</div>
+                    <div class="question-text">I am so happy (1)_____ at my new school!</div>
+                    <div class="options-list">
+                        <button class="option-btn" data-opt="A">A. study</button>
+                        <button class="option-btn" data-opt="B">B. to study</button>
+                        <button class="option-btn" data-opt="C">C. studying</button>
+                        <button class="option-btn" data-opt="D">D. to studying</button>
+                    </div>
+                    <div class="explanation-box">
+                        <strong>Lời giải của cô Lê Hằng:</strong> Cấu trúc thể hiện cảm xúc: "S + be + adjective + to V-infinitive". Ví dụ: happy to study (hạnh phúc khi được học tập).
+                    </div>
+                </div>
+
+                <!-- EX 17 - SECTION 3 - Q2 -->
+                <div class="question-card" data-qtype="abcd" data-correct="B">
+                    <div class="question-header">Exercise 17 - Câu 2 🎒</div>
+                    <div class="question-text">I have made (2)_____ new friends.</div>
+                    <div class="options-list">
+                        <button class="option-btn" data-opt="A">A. few</button>
+                        <button class="option-btn" data-opt="B">B. many</button>
+                        <button class="option-btn" data-opt="C">C. much</button>
+                        <button class="option-btn" data-opt="D">D. any</button>
+                    </div>
+                    <div class="explanation-box">
+                        <strong>Lời giải của cô Lê Hằng:</strong> "friends" là danh từ đếm được số nhiều. Câu khẳng định mang nghĩa tích cực thích hợp dùng "many" (nhiều bạn mới). "much" chỉ đi với danh từ không đếm được, "few" mang nghĩa tiêu cực gần như không có, "any" dùng cho câu phủ định/nghi vấn.
+                    </div>
+                </div>
+
+                <!-- EX 17 - SECTION 3 - Q3 -->
+                <div class="question-card" data-qtype="abcd" data-correct="C">
+                    <div class="question-header">Exercise 17 - Câu 3 🎒</div>
+                    <div class="question-text">There are fun (3)_____ like sports, music, and art.</div>
+                    <div class="options-list">
+                        <button class="option-btn" data-opt="A">A. desks</button>
+                        <button class="option-btn" data-opt="B">B. glues</button>
+                        <button class="option-btn" data-opt="C">C. activities</button>
+                        <button class="option-btn" data-opt="D">D. lessons</button>
+                    </div>
+                    <div class="explanation-box">
+                        <strong>Lời giải của cô Lê Hằng:</strong> Liệt kê "sports, music, and art" là các hoạt động giải trí, do đó danh từ phù hợp nhất bao quát nghĩa là "activities" (các hoạt động vui vẻ).
+                    </div>
+                </div>
+
+                <!-- EX 17 - SECTION 3 - Q4 -->
+                <div class="question-card" data-qtype="abcd" data-correct="C">
+                    <div class="question-header">Exercise 17 - Câu 4 🎒</div>
+                    <div class="question-text">Every day is exciting and full (4)_____ learning.</div>
+                    <div class="options-list">
+                        <button class="option-btn" data-opt="A">A. about</button>
+                        <button class="option-btn" data-opt="B">B. with</button>
+                        <button class="option-btn" data-opt="C">C. of</button>
+                        <button class="option-btn" data-opt="D">D. for</button>
+                    </div>
+                    <div class="explanation-box">
+                        <strong>Lời giải của cô Lê Hằng:</strong> Cấu trúc tính từ thông dụng đi kèm giới từ: "be full of something" nghĩa là chứa đầy, tràn đầy điều gì đó.
+                    </div>
+                </div>
+
+                <!-- EX 18 - SECTION 1 - Q1 -->
+                <div class="question-card" data-qtype="abcd" data-correct="A">
+                    <div class="question-header">Exercise 18 - Câu 1 🌟</div>
+                    <div class="question-text">I spend time (1)_____ my family most evenings.</div>
+                    <div class="options-list">
+                        <button class="option-btn" data-opt="A">A. with</button>
+                        <button class="option-btn" data-opt="B">B. to</button>
+                        <button class="option-btn" data-opt="C">C. of</button>
+                        <button class="option-btn" data-opt="D">D. in</button>
+                    </div>
+                    <div class="explanation-box">
+                        <strong>Lời giải của cô Lê Hằng:</strong> Cấu trúc: "spend time with somebody" có nghĩa là dành thời gian ở bên cạnh ai đó (my family).
+                    </div>
+                </div>
+
+                <!-- EX 18 - SECTION 1 - Q2 -->
+                <div class="question-card" data-qtype="abcd" data-correct="D">
+                    <div class="question-header">Exercise 18 - Câu 2 🌟</div>
+                    <div class="question-text">At (2)_____ weekends, I hang out...</div>
+                    <div class="options-list">
+                        <button class="option-btn" data-opt="A">A. a</button>
+                        <button class="option-btn" data-opt="B">B. the</button>
+                        <button class="option-btn" data-opt="C">C. an</button>
+                        <button class="option-btn" data-opt="D">D. no article.</button>
+                    </div>
+                    <div class="explanation-box">
+                        <strong>Lời giải của cô Lê Hằng:</strong> Cụm từ cố định trong tiếng Anh Anh/Anh Mỹ: "at weekends" thường không bắt buộc mạo từ khi viết ở dạng số nhiều tổng quát. Chọn "no article".
+                    </div>
+                </div>
+
+                <!-- EX 18 - SECTION 1 - Q3 -->
+                <div class="question-card" data-qtype="abcd" data-correct="B">
+                    <div class="question-header">Exercise 18 - Câu 3 🌟</div>
+                    <div class="question-text">hang out with my friends at the park (3)_____ in the playground...</div>
+                    <div class="options-list">
+                        <button class="option-btn" data-opt="A">A. and</button>
+                        <button class="option-btn" data-opt="B">B. or</button>
+                        <button class="option-btn" data-opt="C">C. but</button>
+                        <button class="option-btn" data-opt="D">D. so</button>
+                    </div>
+                    <div class="explanation-box">
+                        <strong>Lời giải của cô Lê Hằng:</strong> Dùng liên từ lựa chọn "or" (hoặc) giữa hai địa điểm giải trí ngoài trời: "at the park or in the playground".
+                    </div>
+                </div>
+
+                <!-- EX 18 - SECTION 1 - Q4 -->
+                <div class="question-card" data-qtype="abcd" data-correct="D">
+                    <div class="question-header">Exercise 18 - Câu 4 🌟</div>
+                    <div class="question-text">I like to go to (4)_____ a film with my friends.</div>
+                    <div class="options-list">
+                        <button class="option-btn" data-opt="A">A. learn</button>
+                        <button class="option-btn" data-opt="B">B. play</button>
+                        <button class="option-btn" data-opt="C">C. do</button>
+                        <button class="option-btn" data-opt="D">D. see</button>
+                    </div>
+                    <div class="explanation-box">
+                        <strong>Lời giải của cô Lê Hằng:</strong> Collocation đi liền với phim ảnh: "see a film" hoặc "watch a movie" mang ý nghĩa là thưởng thức, đón xem một bộ phim.
+                    </div>
+                </div>
+
+                <!-- EX 18 - SECTION 1 - Q5 -->
+                <div class="question-card" data-qtype="abcd" data-correct="C">
+                    <div class="question-header">Exercise 18 - Câu 5 🌟</div>
+                    <div class="question-text">once a year they go (5)_____.</div>
+                    <div class="options-list">
+                        <button class="option-btn" data-opt="A">A. camp</button>
+                        <button class="option-btn" data-opt="B">B. to camp</button>
+                        <button class="option-btn" data-opt="C">C. camping</button>
+                        <button class="option-btn" data-opt="D">D. camps</button>
+                    </div>
+                    <div class="explanation-box">
+                        <strong>Lời giải của cô Lê Hằng:</strong> Cấu trúc chỉ hoạt động giải trí/thể thao ngoài trời bắt đầu bằng động từ Go: "go + V-ing". Ví dụ: go camping (đi cắm trại), go swimming, go shopping.
+                    </div>
+                </div>
+
+                <!-- EX 18 - SECTION 1 - Q6 -->
+                <div class="question-card" data-qtype="abcd" data-correct="A">
+                    <div class="question-header">Exercise 18 - Câu 6 🌟</div>
+                    <div class="question-text">They stay in tents on a (6)_____ and have picnics...</div>
+                    <div class="options-list">
+                        <button class="option-btn" data-opt="A">A. lovely camp site</button>
+                        <button class="option-btn" data-opt="B">B. lovely site camp</button>
+                        <button class="option-btn" data-opt="C">C. camp lovely site</button>
+                        <button class="option-btn" data-opt="D">D. site lovely camp.</button>
+                    </div>
+                    <div class="explanation-box">
+                        <strong>Lời giải của cô Lê Hằng:</strong> Trật tự từ tiếng Anh: Tính từ miêu tả cảm xúc đứng trước danh từ ghép. "lovely" (tính từ) + "campsite" (danh từ ghép: địa điểm cắm trại). Do vậy chọn phương án A.
+                    </div>
+                </div>
+
+                <!-- EX 18 - SECTION 2 - Q1 -->
+                <div class="question-card" data-qtype="abcd" data-correct="A">
+                    <div class="question-header">Exercise 18 - Bài 2 - Câu 1 🏫</div>
+                    <div class="question-text">I often walk to school (1)_____ I live nearby.</div>
+                    <div class="options-list">
+                        <button class="option-btn" data-opt="A">A. because</button>
+                        <button class="option-btn" data-opt="B">B. so</button>
+                        <button class="option-btn" data-opt="C">C. when</button>
+                        <button class="option-btn" data-opt="D">D. before</button>
+                    </div>
+                    <div class="explanation-box">
+                        <strong>Lời giải của cô Lê Hằng:</strong> Dùng liên từ chỉ nguyên nhân "because" (bởi vì). Đi bộ đi học - lý do là vì nhà ở ngay gần trường (live nearby).
+                    </div>
+                </div>
+
+                <!-- EX 18 - SECTION 2 - Q2 -->
+                <div class="question-card" data-qtype="abcd" data-correct="B">
+                    <div class="question-header">Exercise 18 - Bài 2 - Câu 2 🏫</div>
+                    <div class="question-text">I don’t wear a (2)_____ only when I have physical education (P. E).</div>
+                    <div class="options-list">
+                        <button class="option-btn" data-opt="A">A. hat</button>
+                        <button class="option-btn" data-opt="B">B. uniform</button>
+                        <button class="option-btn" data-opt="C">C. jacket</button>
+                        <button class="option-btn" data-opt="D">D. dress</button>
+                    </div>
+                    <div class="explanation-box">
+                        <strong>Lời giải của cô Lê Hằng:</strong> Dựa vào vế sau nói về việc thay đồ thể thao (T-shirt, shorts, socks) vào tiết thể dục, suy ra bình thường học sinh phải mặc đồng phục đến trường ("uniform").
+                    </div>
+                </div>
+
+                <!-- EX 18 - SECTION 2 - Q3 -->
+                <div class="question-card" data-qtype="abcd" data-correct="A">
+                    <div class="question-header">Exercise 18 - Bài 2 - Câu 3 🏫</div>
+                    <div class="question-text">Then I have to (3)_____ a white T- shirt...</div>
+                    <div class="options-list">
+                        <button class="option-btn" data-opt="A">A. wear</button>
+                        <button class="option-btn" data-opt="B">B. to wear</button>
+                        <button class="option-btn" data-opt="C">C. wearing</button>
+                        <button class="option-btn" data-opt="D">D. to wearing</button>
+                    </div>
+                    <div class="explanation-box">
+                        <strong>Lời giải của cô Lê Hằng:</strong> Cấu trúc động từ khuyết thiếu cụm: "have to + V-infinitive" mang nghĩa bắt buộc phải làm hành động gì đó. Chọn "wear".
+                    </div>
+                </div>
+
+                <!-- EX 18 - SECTION 2 - Q4 -->
+                <div class="question-card" data-qtype="abcd" data-correct="B">
+                    <div class="question-header">Exercise 18 - Bài 2 - Câu 4 🏫</div>
+                    <div class="question-text">There (4)_____ a laboratory to do experiments, a library...</div>
+                    <div class="options-list">
+                        <button class="option-btn" data-opt="A">A. are</button>
+                        <button class="option-btn" data-opt="B">B. is</button>
+                        <button class="option-btn" data-opt="C">C. has</button>
+                        <button class="option-btn" data-opt="D">D. have</button>
+                    </div>
+                    <div class="explanation-box">
+                        <strong>Lời giải của cô Lê Hằng:</strong> Cấu trúc liệt kê bắt đầu bằng danh từ số ít đứng ngay đầu: "a laboratory". Quy tắc "There is + danh từ số ít".
+                    </div>
+                </div>
+
+                <!-- EX 18 - SECTION 2 - Q5 -->
+                <div class="question-card" data-qtype="abcd" data-correct="C">
+                    <div class="question-header">Exercise 18 - Bài 2 - Câu 5 🏫</div>
+                    <div class="question-text">a music room to (5)_____ musical instruments...</div>
+                    <div class="options-list">
+                        <button class="option-btn" data-opt="A">A. do</button>
+                        <button class="option-btn" data-opt="B">B. have</button>
+                        <button class="option-btn" data-opt="C">C. play</button>
+                        <button class="option-btn" data-opt="D">D. take</button>
+                    </div>
+                    <div class="explanation-box">
+                        <strong>Lời giải của cô Lê Hằng:</strong> Collocation chuẩn xác: "play musical instruments" nghĩa là chơi các loại nhạc cụ (đàn, sáo, trống...).
+                    </div>
+                </div>
+
+                <!-- EX 18 - SECTION 2 - Q6 -->
+                <div class="question-card" data-qtype="abcd" data-correct="A">
+                    <div class="question-header">Exercise 18 - Bài 2 - Câu 6 🏫</div>
+                    <div class="question-text">There is also a large (6)_____ where we can have lunch...</div>
+                    <div class="options-list">
+                        <button class="option-btn" data-opt="A">A. canteen</button>
+                        <button class="option-btn" data-opt="B">B. theatre</button>
+                        <button class="option-btn" data-opt="C">C. schoolyard</button>
+                        <button class="option-btn" data-opt="D">D. garden</button>
+                    </div>
+                    <div class="explanation-box">
+                        <strong>Lời giải của cô Lê Hằng:</strong> Nơi học sinh có thể ăn trưa tại trường chính là "canteen" (nhà ăn/căn tin trường học).
+                    </div>
+                </div>
+
+                <!-- EX 18 - SECTION 3 - Q1 -->
+                <div class="question-card" data-qtype="abcd" data-correct="A">
+                    <div class="question-header">Exercise 18 - Bài 3 - Câu 1 🎒</div>
+                    <div class="question-text">but now I (1)_____ in London with my sister...</div>
+                    <div class="options-list">
+                        <button class="option-btn" data-opt="A">A. live</button>
+                        <button class="option-btn" data-opt="B">B. lived</button>
+                        <button class="option-btn" data-opt="C">C. will live</button>
+                        <button class="option-btn" data-opt="D">D. lives</button>
+                    </div>
+                    <div class="explanation-box">
+                        <strong>Lời giải của cô Lê Hằng:</strong> Dựa vào từ nhận biết "now" (bây giờ), kết hợp chủ ngữ là ngôi thứ nhất số ít "I", động từ thời hiện tại đơn giữ nguyên thể là "live".
+                    </div>
+                </div>
+
+                <!-- EX 18 - SECTION 3 - Q2 -->
+                <div class="question-card" data-qtype="abcd" data-correct="C">
+                    <div class="question-header">Exercise 18 - Bài 3 - Câu 2 🎒</div>
+                    <div class="question-text">there are some (2)_____ I must follow: arrive at school on time...</div>
+                    <div class="options-list">
+                        <button class="option-btn" data-opt="A">A. rubbers</button>
+                        <button class="option-btn" data-opt="B">B. paper clips</button>
+                        <button class="option-btn" data-opt="C">C. rules</button>
+                        <button class="option-btn" data-opt="D">D. bins</button>
+                    </div>
+                    <div class="explanation-box">
+                        <strong>Lời giải của cô Lê Hằng:</strong> Tập hợp các hành vi bắt buộc ở vế sau như đi học đúng giờ, mặc đồng phục... được gọi chung là "rules" (nội quy/quy định nhà trường). Các từ khác là đồ dùng học tập: rubbers (cục tẩy), paper clips (kẹp giấy).
+                    </div>
+                </div>
+
+                <!-- EX 18 - SECTION 3 - Q3 -->
+                <div class="question-card" data-qtype="abcd" data-correct="C">
+                    <div class="question-header">Exercise 18 - Bài 3 - Câu 3 🎒</div>
+                    <div class="question-text">arrive at school (3)_____ time; wear uniform...</div>
+                    <div class="options-list">
+                        <button class="option-btn" data-opt="A">A. in</button>
+                        <button class="option-btn" data-opt="B">B. at</button>
+                        <button class="option-btn" data-opt="C">C. on</button>
+                        <button class="option-btn" data-opt="D">D. to</button>
+                    </div>
+                    <div class="explanation-box">
+                        <strong>Lời giải của cô Lê Hằng:</strong> Thành ngữ giới từ quen thuộc: "on time" mang ý nghĩa chính xác là đúng giờ quy định.
+                    </div>
+                </div>
+
+                <!-- EX 18 - SECTION 3 - Q4 -->
+                <div class="question-card" data-qtype="abcd" data-correct="A">
+                    <div class="question-header">Exercise 18 - Bài 3 - Câu 4 🎒</div>
+                    <div class="question-text">finish the homework (4)____ going to school...</div>
+                    <div class="options-list">
+                        <button class="option-btn" data-opt="A">A. before</button>
+                        <button class="option-btn" data-opt="B">B. after</button>
+                        <button class="option-btn" data-opt="C">C. when</button>
+                        <button class="option-btn" data-opt="D">D. while</button>
+                    </div>
+                    <div class="explanation-box">
+                        <strong>Lời giải của cô Lê Hằng:</strong> Về logic nội quy học tập, học sinh bắt buộc phải làm xong bài tập về nhà "before" (trước khi) bước chân tới trường học.
+                    </div>
+                </div>
+
+                <!-- EX 18 - SECTION 3 - Q5 -->
+                <div class="question-card" data-qtype="abcd" data-correct="D">
+                    <div class="question-header">Exercise 18 - Bài 3 - Câu 5 🎒</div>
+                    <div class="question-text">the teachers are kind and (5)______.</div>
+                    <div class="options-list">
+                        <button class="option-btn" data-opt="A">A. interesting</button>
+                        <button class="option-btn" data-opt="B">B. unfriendly</button>
+                        <button class="option-btn" data-opt="C">C. mean</button>
+                        <button class="option-btn" data-opt="D">D. helpful</button>
+                    </div>
+                    <div class="explanation-box">
+                        <strong>Lời giải của cô Lê Hằng:</strong> Cần tính từ mang nghĩa tốt đi đôi với từ "kind" (tốt bụng). Chọn "helpful" (hay giúp đỡ học sinh). Loại trừ các từ tiêu cực: unfriendly (không thân thiện), mean (bủn xỉn/xấu tính).
+                    </div>
+                </div>
+
+                <!-- EX 18 - SECTION 3 - Q6 -->
+                <div class="question-card" data-qtype="abcd" data-correct="C">
+                    <div class="question-header">Exercise 18 - Bài 3 - Câu 6 🎒</div>
+                    <div class="question-text">And I (6)_____ some new friends in my classroom.</div>
+                    <div class="options-list">
+                        <button class="option-btn" data-opt="A">A. do</button>
+                        <button class="option-btn" data-opt="B">B. play</button>
+                        <button class="option-btn" data-opt="C">C. make</button>
+                        <button class="option-btn" data-opt="D">D. study</button>
+                    </div>
+                    <div class="explanation-box">
+                        <strong>Lời giải của cô Lê Hằng:</strong> Cụm từ cố định không thể thay thế: "make friends" nghĩa là kết bạn, làm quen với những người bạn mới.
+                    </div>
+                </div>
+
+                <!-- EX 19 - SECTION 1 - Q1 -->
+                <div class="question-card" data-qtype="abcd" data-correct="B">
+                    <div class="question-header">Exercise 19 - Bài 1 - Câu 1 📨</div>
+                    <div class="question-text">What is the main idea of the passage?</div>
+                    <div class="options-list">
+                        <button class="option-btn" data-opt="A">A. John wants to invite Sam to a new restaurant.</button>
+                        <button class="option-btn" data-opt="B">B. John is giving Sam directions to his new flat and arranging a meeting.</button>
+                        <button class="option-btn" data-opt="C">C. John wants to visit Sam's new school.</button>
+                        <button class="option-btn" data-opt="D">D. John is asking Sam for help with his new flat.</button>
+                    </div>
+                    <div class="explanation-box">
+                        <strong>Lời giải của cô Lê Hằng:</strong> Xuyên suốt email, John thảo luận về thời gian rảnh thứ bảy để hẹn Sam qua chơi nhà mới ("see our new flat"), đồng thời chỉ đường rất kỹ ở đoạn 2 ("Our address is... turn left at the post office..."). Do đó B là đáp án bao quát nhất.
+                    </div>
+                </div>
+
+                <!-- EX 19 - SECTION 1 - Q2 -->
+                <div class="question-card" data-qtype="abcd" data-correct="D">
+                    <div class="question-header">Exercise 19 - Bài 1 - Câu 2 📨</div>
+                    <div class="question-text">What day is better for John to meet?</div>
+                    <div class="options-list">
+                        <button class="option-btn" data-opt="A">A. Friday</button>
+                        <button class="option-btn" data-opt="B">B. Monday</button>
+                        <button class="option-btn" data-opt="C">C. Sunday</button>
+                        <button class="option-btn" data-opt="D">D. Saturday</button>
+                    </div>
+                    <div class="explanation-box">
+                        <strong>Lời giải của cô Lê Hằng:</strong> Dẫn chứng chính xác ở dòng 1: "Saturday is better for me because I don’t have classes on Sunday."
+                    </div>
+                </div>
+
+                <!-- EX 19 - SECTION 1 - Q3 -->
+                <div class="question-card" data-qtype="abcd" data-correct="C">
+                    <div class="question-header">Exercise 19 - Bài 1 - Câu 3 📨</div>
+                    <div class="question-text">What does John want to do in the afternoon?</div>
+                    <div class="options-list">
+                        <button class="option-btn" data-opt="A">A. Go to the cinema.</button>
+                        <button class="option-btn" data-opt="B">B. Visit Sam's school.</button>
+                        <button class="option-btn" data-opt="C">C. Go for a walk.</button>
+                        <button class="option-btn" data-opt="D">D. Go shopping.</button>
+                    </div>
+                    <div class="explanation-box">
+                        <strong>Lời giải của cô Lê Hằng:</strong> Dẫn chứng nằm ở đoạn 1: "We can eat at home and then go for a walk in the afternoon."
+                    </div>
+                </div>
+
+                <!-- EX 19 - SECTION 1 - Q4 -->
+                <div class="question-card" data-qtype="abcd" data-correct="A">
+                    <div class="question-header">Exercise 19 - Bài 1 - Câu 4 📨</div>
+                    <div class="question-text">Why is John's address difficult to find?</div>
+                    <div class="options-list">
+                        <button class="option-btn" data-opt="A">A. The house numbers are strange.</button>
+                        <button class="option-btn" data-opt="B">B. It's on a busy road.</button>
+                        <button class="option-btn" data-opt="C">C. It's far from the post office.</button>
+                        <button class="option-btn" data-opt="D">D. There are no clear landmarks.</button>
+                    </div>
+                    <div class="explanation-box">
+                        <strong>Lời giải của cô Lê Hằng:</strong> Dẫn chứng rõ ràng trong đoạn 2 văn bản: "...but it’s a bit difficult to find because the house numbers are really strange here."
+                    </div>
+                </div>
+
+                <!-- EX 19 - SECTION 1 - Q5 -->
+                <div class="question-card" data-qtype="abcd" data-correct="B">
+                    <div class="question-header">Exercise 19 - Bài 1 - Câu 5 📨</div>
+                    <div class="question-text">What does the word "catch up" in the passage mostly mean?</div>
+                    <div class="options-list">
+                        <button class="option-btn" data-opt="A">A. To play a game together.</button>
+                        <button class="option-btn" data-opt="B">B. To meet after a long time and talk about recent events.</button>
+                        <button class="option-btn" data-opt="C">C. To run quickly to reach someone.</button>
+                        <button class="option-btn" data-opt="D">D. To finish homework together.</button>
+                    </div>
+                    <div class="explanation-box">
+                        <strong>Lời giải của cô Lê Hằng:</strong> Cụm từ "catch up" mang ý nghĩa là tụ họp, hàn huyên, trò chuyện tâm sự với bạn bè lâu ngày không gặp để cập nhật tình hình cuộc sống của nhau. Do vậy chọn B.
+                    </div>
+                </div>
+
+                <!-- EX 19 - SECTION 2 - Q1 -->
+                <div class="question-card" data-qtype="abcd" data-correct="A">
+                    <div class="question-header">Exercise 19 - Bài 2 - Câu 1 🏰</div>
+                    <div class="question-text">What can be the best title for the passage?</div>
+                    <div class="options-list">
+                        <button class="option-btn" data-opt="A">A. Eton College: A Prestigious Private School</button>
+                        <button class="option-btn" data-opt="B">B. A Day at a British School</button>
+                        <button class="option-btn" data-opt="C">C. Prince William's School Life</button>
+                        <button class="option-btn" data-opt="D">D. How to Get into a Famous School</button>
+                    </div>
+                    <div class="explanation-box">
+                        <strong>Lời giải của cô Lê Hằng:</strong> Toàn bộ bài đọc tập trung giới thiệu chi tiết về lịch sử, học phí đắt đỏ, cơ sở vật chất hoành tráng của trường nam sinh nổi tiếng Eton College. Do vậy đáp án A làm tiêu đề là xuất sắc nhất.
+                    </div>
+                </div>
+
+                <!-- EX 19 - SECTION 2 - Q2 -->
+                <div class="question-card" data-qtype="abcd" data-correct="C">
+                    <div class="question-header">Exercise 19 - Bài 2 - Câu 2 🏰</div>
+                    <div class="question-text">How old is Eton College?</div>
+                    <div class="options-list">
+                        <button class="option-btn" data-opt="A">A. Less than 100 years old.</button>
+                        <button class="option-btn" data-opt="B">B. Around 1300 years old.</button>
+                        <button class="option-btn" data-opt="C">C. More than 570 years old.</button>
+                        <button class="option-btn" data-opt="D">D. Exactly 18 years old.</button>
+                    </div>
+                    <div class="explanation-box">
+                        <strong>Lời giải của cô Lê Hằng:</strong> Dẫn chứng nằm ở đoạn 1: "It is over 570 years old." Từ "over" đồng nghĩa với "more than" (nhiều hơn/trên 570 tuổi).
+                    </div>
+                </div>
+
+                <!-- EX 19 - SECTION 2 - Q3 -->
+                <div class="question-card" data-qtype="abcd" data-correct="C">
+                    <div class="question-header">Exercise 19 - Bài 2 - Câu 3 🏰</div>
+                    <div class="question-text">The word "they" in line 3 refers to _______.</div>
+                    <div class="options-list">
+                        <button class="option-btn" data-opt="A">A. teachers</button>
+                        <button class="option-btn" data-opt="B">B. families</button>
+                        <button class="option-btn" data-opt="C">C. students</button>
+                        <button class="option-btn" data-opt="D">D. classrooms</button>
+                    </div>
+                    <div class="explanation-box">
+                        <strong>Lời giải của cô Lê Hằng:</strong> Đọc câu chứa từ đó: "There are about 1, 300 students and they all live in the school..." Đại từ "they" ở đây dùng để thay thế cho danh từ số nhiều đứng ngay trước đó là "students" (học sinh).
+                    </div>
+                </div>
+
+                <!-- EX 19 - SECTION 2 - Q4 -->
+                <div class="question-card" data-qtype="abcd" data-correct="B">
+                    <div class="question-header">Exercise 19 - Bài 2 - Câu 4 🏰</div>
+                    <div class="question-text">Which of the following facilities is NOT mentioned at Eton College?</div>
+                    <div class="options-list">
+                        <button class="option-btn" data-opt="A">A. A gym</button>
+                        <button class="option-btn" data-opt="B">B. A football pitch</button>
+                        <button class="option-btn" data-opt="C">C. Tennis courts</button>
+                        <button class="option-btn" data-opt="D">D. A concert hall</button>
+                    </div>
+                    <div class="explanation-box">
+                        <strong>Lời giải của cô Lê Hằng:</strong> Đoạn 3 liệt kê rất nhiều cơ sở vật chất gồm: a gym, twenty tennis courts, a concert hall... Hoàn toàn không có từ nhắc tới "a football pitch" (sân bóng đá).
+                    </div>
+                </div>
+
+                <!-- EX 19 - SECTION 2 - Q5 -->
+                <div class="question-card" data-qtype="abcd" data-correct="D">
+                    <div class="question-header">Exercise 19 - Bài 2 - Câu 5 🏰</div>
+                    <div class="question-text">How many teachers are there at Eton College for every 8 students?</div>
+                    <div class="options-list">
+                        <button class="option-btn" data-opt="A">A. 100</button>
+                        <button class="option-btn" data-opt="B">B. 2</button>
+                        <button class="option-btn" data-opt="C">C. 160</button>
+                        <button class="option-btn" data-opt="D">D. 1</button>
+                    </div>
+                    <div class="explanation-box">
+                        <strong>Lời giải của cô Lê Hằng:</strong> Dẫn chứng ở câu cuối cùng của đoạn văn: "There is one teacher for 8 students." Tỷ lệ là 1 giáo viên phụ trách 8 học sinh.
+                    </div>
+                </div>
+
+                <!-- EX 19 - SECTION 3 - Q1 -->
+                <div class="question-card" data-qtype="abcd" data-correct="A">
+                    <div class="question-header">Exercise 19 - Bài 3 - Câu 1 🎵</div>
+                    <div class="question-text">What is the main idea of the passage?</div>
+                    <div class="options-list">
+                        <button class="option-btn" data-opt="A">A. Linda's daily routine as a musician.</button>
+                        <button class="option-btn" data-opt="B">B. How to play the piano in a studio.</button>
+                        <button class="option-btn" data-opt="C">C. The different types of music Linda plays.</button>
+                        <button class="option-btn" data-opt="D">D. Linda's favorite foods and drinks.</button>
+                    </div>
+                    <div class="explanation-box">
+                        <strong>Lời giải của cô Lê Hằng:</strong> Toàn bộ nội dung kể theo trình tự thời gian từ sáng sớm thức dậy lúc 9h, đi taxi đến phòng thu lúc 10h, ăn trưa lúc 1h, tối diễn ở phòng hòa nhạc... Đây chính là lịch trình sinh hoạt hàng ngày (daily routine) của một nhạc sĩ.
+                    </div>
+                </div>
+
+                <!-- EX 19 - SECTION 3 - Q2 -->
+                <div class="question-card" data-qtype="abcd" data-correct="C">
+                    <div class="question-header">Exercise 19 - Bài 3 - Câu 2 🎵</div>
+                    <div class="question-text">What instrument does Linda play?</div>
+                    <div class="options-list">
+                        <button class="option-btn" data-opt="A">A. The guitar</button>
+                        <button class="option-btn" data-opt="B">B. The drums</button>
+                        <button class="option-btn" data-opt="C">C. The piano</button>
+                        <button class="option-btn" data-opt="D">D. The violin</button>
+                    </div>
+                    <div class="explanation-box">
+                        <strong>Lời giải của cô Lê Hằng:</strong> Dẫn chứng xuất hiện ngay dòng số 2: "She plays the piano."
+                    </div>
+                </div>
+
+                <!-- EX 19 - SECTION 3 - Q3 -->
+                <div class="question-card" data-qtype="abcd" data-correct="C">
+                    <div class="question-header">Exercise 19 - Bài 3 - Câu 3 🎵</div>
+                    <div class="question-text">The word "tired" in line 7 is closest in meaning to __________.</div>
+                    <div class="options-list">
+                        <button class="option-btn" data-opt="A">A. energetic</button>
+                        <button class="option-btn" data-opt="B">B. happy</button>
+                        <button class="option-btn" data-opt="C">C. exhausted</button>
+                        <button class="option-btn" data-opt="D">D. bored</button>
+                    </div>
+                    <div class="explanation-box">
+                        <strong>Lời giải của cô Lê Hằng:</strong> Từ "tired" có nghĩa là mệt mỏi, đồng nghĩa sát nhất với từ "exhausted" (kiệt sức, vô cùng mệt mỏi sau một ngày dài làm việc liên tục).
+                    </div>
+                </div>
+
+                <!-- EX 19 - SECTION 3 - Q4 -->
+                <div class="question-card" data-qtype="abcd" data-correct="B">
+                    <div class="question-header">Exercise 19 - Bài 3 - Câu 4 🎵</div>
+                    <div class="question-text">Where does Linda go at one o'clock?</div>
+                    <div class="options-list">
+                        <button class="option-btn" data-opt="A">A. To the concert hall.</button>
+                        <button class="option-btn" data-opt="B">B. To a restaurant.</button>
+                        <button class="option-btn" data-opt="C">C. To her home.</button>
+                        <button class="option-btn" data-opt="D">D. To another studio.</button>
+                    </div>
+                    <div class="explanation-box">
+                        <strong>Lời giải của cô Lê Hằng:</strong> Dẫn chứng cụ thể: "At one o'clock, she goes to the restaurant. She eats lunch with her friends."
+                    </div>
+                </div>
+
+                <!-- EX 19 - SECTION 3 - Q5 -->
+                <div class="question-card" data-qtype="abcd" data-correct="C">
+                    <div class="question-header">Exercise 19 - Bài 3 - Câu 5 🎵</div>
+                    <div class="question-text">What does Linda do in the studio in the morning?</div>
+                    <div class="options-list">
+                        <button class="option-btn" data-opt="A">A. She has dinner.</button>
+                        <button class="option-btn" data-opt="B">B. She sings for people.</button>
+                        <button class="option-btn" data-opt="C">C. She writes new songs and makes CDs.</button>
+                        <button class="option-btn" data-opt="D">D. She meets her friends for lunch.</button>
+                    </div>
+                    <div class="explanation-box">
+                        <strong>Lời giải của cô Lê Hằng:</strong> Dẫn chứng: "At ten o'clock, she takes a taxi to the studio. In the studio, she plays the piano. She writes new songs and makes CDs."
+                    </div>
+                </div>
+
+                <div class="submit-container">
+                    <button class="submit-btn" onclick="gradeQuiz()">NỘP BÀI KIỂM TRA 🎉</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="score-modal">
+        <div class="score-card">
+            <div class="score-title">🏆 KẾT QUẢ CỦA BẠN 🏆</div>
+            <div class="score-num" id="modal-score-text">0/0</div>
+            <div class="score-comment" id="modal-feedback-text">Làm tốt lắm! Hãy tiếp tục rèn luyện thêm nhé!</div>
+            <button class="close-btn" onclick="closeModal()">Làm lại bài thi 🔄</button>
+        </div>
+    </div>
+
+    <script>
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+        function playDingSound() {
+            let osc = audioCtx.createOscillator();
+            let gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); // C5
+            osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.1); // E5
+            gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.4);
+        }
+
+        function playWrongSound() {
+            let osc = audioCtx.createOscillator();
+            let gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(180, audioCtx.currentTime);
+            osc.frequency.linearRampToValueAtTime(90, audioCtx.currentTime + 0.3);
+            gain.gain.setValueAtTime(0.25, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.35);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.35);
+        }
+
+        function toggleTranslation(btn) {
+            let box = btn.nextElementSibling;
+            if(box.style.display === "block") {
+                box.style.display = "none";
+                btn.innerText = "Mở dịch đoạn này 🌟";
+            } else {
+                box.style.display = "block";
+                btn.innerText = "Đóng dịch đoạn này ❌";
+            }
+        }
+
+        let totalSeconds = 600;
+        let timerInterval = null;
+        let isTimerRunning = false;
+
+        function toggleTimer() {
+            let btn = document.getElementById('timer-toggle-btn');
+            if (!isTimerRunning) {
+                isTimerRunning = true;
+                btn.innerText = "TẠM DỪNG LÀM BÀI";
+                btn.style.background = "#FF4757";
+                btn.style.boxShadow = "0 4px 0 #b72f3b";
+                timerInterval = setInterval(updateTimer, 1000);
+            } else {
+                isTimerRunning = false;
+                btn.innerText = "TIẾP TỤC LÀM BÀI";
+                btn.style.background = "#00C9A7";
+                btn.style.boxShadow = "0 4px 0 #00967c";
+                clearInterval(timerInterval);
+            }
+        }
+
+        function updateTimer() {
+            if (totalSeconds <= 0) {
+                clearInterval(timerInterval);
+                document.getElementById('timer-clock').innerText = "00:00";
+                alert("Đã hết giờ làm bài. Bạn vẫn có thể tiếp tục làm, nhưng nhớ là trong phòng thi thật, bạn chỉ nên làm một bài như thế này trong 10 phút thôi nha.");
+                return;
+            }
+            totalSeconds--;
+            let mins = Math.floor(totalSeconds / 60);
+            let secs = totalSeconds % 60;
+            document.getElementById('timer-clock').innerText = 
+                (mins < 10 ? "0" + mins : mins) + ":" + (secs < 10 ? "0" + secs : secs);
+        }
+
+        function shuffleOptions() {
+            let lists = document.querySelectorAll('.options-list');
+            lists.forEach(list => {
+                let buttons = Array.from(list.children);
+                for (let i = buttons.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [buttons[i], buttons[j]] = [buttons[j], buttons[i]];
+                }
+                list.innerHTML = '';
+                buttons.forEach(btn => list.appendChild(btn));
+            });
+        }
+
+        function initQuiz() {
+            let cards = document.querySelectorAll('.question-card[data-qtype="abcd"]');
+            cards.forEach(card => {
+                let correctAns = card.getAttribute('data-correct');
+                let buttons = card.querySelectorAll('.option-btn');
+                let explanation = card.querySelector('.explanation-box');
+
+                buttons.forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        if (card.classList.contains('answered')) return;
+
+                        let chosenOpt = btn.getAttribute('data-opt');
+                        if (chosenOpt === correctAns) {
+                            btn.classList.add('correct');
+                            playDingSound();
+                            triggerConfetti();
+                        } else {
+                            btn.classList.add('wrong');
+                            playWrongSound();
+                            buttons.forEach(b => {
+                                if (b.getAttribute('data-opt') === correctAns) {
+                                    b.classList.add('correct');
+                                }
+                            });
+                        }
+
+                        buttons.forEach(b => b.classList.add('disabled'));
+                        card.classList.add('answered');
+                        explanation.style.display = "block";
+                    });
+                });
+            });
+        }
+
+        let canvas = document.getElementById('confetti-canvas');
+        let ctx = canvas.getContext('2d');
+        let confettiParticles = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        function triggerConfetti() {
+            for (let i = 0; i < 40; i++) {
+                confettiParticles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height - canvas.height,
+                    size: Math.random() * 6 + 5,
+                    color: `hsl(${Math.random() * 360}, 100%, 60%)`,
+                    speedX: Math.random() * 4 - 2,
+                    speedY: Math.random() * 4 + 4,
+                    rotation: Math.random() * 360,
+                    rotationSpeed: Math.random() * 4 - 2
+                });
+            }
+        }
+
+        function drawConfetti() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < confettiParticles.length; i++) {
+                let p = confettiParticles[i];
+                p.y += p.speedY;
+                p.x += p.speedX;
+                p.rotation += p.rotationSpeed;
+
+                ctx.save();
+                ctx.translate(p.x, p.y);
+                ctx.rotate(p.rotation * Math.PI / 180);
+                ctx.fillStyle = p.color;
+                ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+                ctx.restore();
+
+                if (p.y > canvas.height) {
+                    confettiParticles.splice(i, 1);
+                    i--;
+                }
+            }
+            requestAnimationFrame(drawConfetti);
+        }
+        requestAnimationFrame(drawConfetti);
+
+        function gradeQuiz() {
+            let cards = document.querySelectorAll('.question-card[data-qtype="abcd"]');
+            let correctTotal = 0;
+            let total = cards.length;
+
+            cards.forEach(card => {
+                let correctOpt = card.getAttribute('data-correct');
+                let correctBtn = card.querySelector(`.option-btn.correct[data-opt="${correctOpt}"]`);
+                let wrongBtn = card.querySelector('.option-btn.wrong');
+                if (correctBtn && !wrongBtn) {
+                    correctTotal++;
+                }
+            });
+
+            document.getElementById('modal-score-text').innerText = `${correctTotal}/${total}`;
+            let feedback = document.getElementById('modal-feedback-text');
+            if (correctTotal === total) {
+                feedback.innerText = "🌟 THIÊN TÀI TIẾNG ANH! Bạn đã làm đúng hoàn toàn 100% tất cả các câu hỏi! Quá xuất sắc luôn!";
+                triggerConfetti();
+            } else if (correctTotal >= total / 2) {
+                feedback.innerText = "👍 LÀM TỐT LẮM! Bạn hiểu bài rất tốt rồi, hãy tiếp tục phát huy và đọc kỹ lời giải của cô Lê Hằng nhé!";
+            } else {
+                feedback.innerText = "💪 CỐ LÊN NHÉ! Đọc lại thật kỹ dẫn chứng bên trái cùng bảng giải thích chi tiết để tích lũy kiến thức nha!";
+            }
+
+            document.getElementById('score-modal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('score-modal').classList.remove('active');
+        }
+
+        window.onload = function() {
+            shuffleOptions();
+            initQuiz();
+        };
+    </script>
+</body>
+</html>
